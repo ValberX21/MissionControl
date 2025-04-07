@@ -1,0 +1,79 @@
+﻿@page "/create-mission"
+
+@inject HttpClient Http
+@inject IJSRuntime JS
+@using Microsoft.AspNetCore.Components.Forms
+@using MissionControl.Shared.Models
+
+<h3>Create New Mission</h3>
+
+<EditForm Model="@mission" OnValidSubmit="HandleValidSubmit"
+          @formname="CreateMissionForm"
+          FormName="CreateMissionForm">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Name:</label>
+        <InputText @bind-Value="mission.Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Destination:</label>
+        <InputText @bind-Value="mission.Destination" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Launch Date:</label>
+        <InputDate @bind-Value="mission.LaunchDate" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Rocket Type:</label>
+        <InputText @bind-Value="mission.RocketType" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Status:</label>
+        <InputSelect @bind-Value="mission.Status" class="form-control">
+            <option value="Planned">Planned</option>
+            <option value="Launched">Launched</option>
+            <option value="Delayed">Delayed</option>
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Mission</button>
+</EditForm>
+
+@if (successMessage != null)
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+
+@code {
+    private Mission mission = new();
+    private string? successMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        // Show object in browser console
+        await JS.InvokeVoidAsync("console.log", mission);
+
+        // Optional: show JSON alert
+        // await JS.InvokeVoidAsync("alert", System.Text.Json.JsonSerializer.Serialize(mission));
+
+        var response = await Http.PostAsJsonAsync("https://localhost:44343/api/Mission/addMission", mission);
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "Mission created successfully!";
+            mission = new();
+        }
+        else
+        {
+            successMessage = "Failed to create mission.";
+        }
+    }
+
+}
