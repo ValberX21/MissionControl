@@ -18,7 +18,12 @@ namespace MissionControl.Data
         {
             try
             {
-                var custom = _db.Mission.Add(mission);
+                if (mission.LaunchDate.Kind != DateTimeKind.Utc)
+                {
+                    mission.LaunchDate = mission.LaunchDate.ToUniversalTime();
+                }
+
+                _db.Mission.Add(mission);
                 await _db.SaveChangesAsync();
 
                 return true;

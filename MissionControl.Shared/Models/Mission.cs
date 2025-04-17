@@ -15,10 +15,14 @@ namespace MissionControl.Shared.Models
   
         public string Destination { get; set; } = String.Empty;
       
-        public DateTime LaunchDate { get; set; } = DateTime.Now;
+        public DateTime LaunchDate { get; set; }
        
         public string RocketType { get; set; } = String.Empty;
    
         public string Status { get; set; } = String.Empty;
+
+        public string MasterApprove { get; set; } = String.Empty;
+
+        public DateTime ApproveDate { get; set; }
     }
 }

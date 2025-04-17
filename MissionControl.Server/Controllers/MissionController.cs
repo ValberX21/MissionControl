@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MissionControl.Business;
+using MissionControl.Message;
 using MissionControl.Shared.Models;
+using System.Text.Json;
 
 namespace MissionControl.Server.Controllers
 {
@@ -9,11 +11,14 @@ namespace MissionControl.Server.Controllers
     public class MissionController : ControllerBase
     {
         private readonly MissionValidator _missionValidator;
+        private readonly RabbitMQService _rabbitMQService;
+
         protected ResponseDto _response;
 
-        public MissionController(MissionValidator missionValidator)
+        public MissionController(MissionValidator missionValidator, RabbitMQService rabbitMQService)
         {
             _missionValidator = missionValidator;
+            _rabbitMQService = rabbitMQService;
             _response = new ResponseDto();
         }
 
@@ -22,17 +27,18 @@ namespace MissionControl.Server.Controllers
         {
             try
             {
-                ResponseDto result = await _missionValidator.addMission(mission);
+                ResponseDto result = await _missionValidator.addMission(mission);                
 
-                bool statusReturned = (bool)result.GetType().GetProperty("IsSuccess")?.GetValue(result);
-
-                if (!statusReturned)
+                if (result.IsSuccess)
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, result);
+                    var messageJson = JsonSerializer.Serialize(result.Data);
+
+                    _rabbitMQService.SendMessage(messageJson, "Mission rescue");
+                    return StatusCode(StatusCodes.Status201Created, result);
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status201Created, result);
+                    return StatusCode(StatusCodes.Status500InternalServerError, result);                   
                 }
             }
             catch (Exception ex)

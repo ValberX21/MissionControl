@@ -17,13 +17,14 @@ namespace MissionControl.Business
         public async Task<ResponseDto> addMission(Mission mission)
         {
             try
-            {
+            {               
                 bool addProdcut = await _missionRepository.CreateMission(mission);
 
                 if (addProdcut)
                 {
                     _response.IsSuccess = true;
-                    _response.Data = "Mission added success";
+                    _response.Data = mission;
+                    _response.DisplayMessage = "Mission added success";
                 }
             }
             catch (Exception ex)

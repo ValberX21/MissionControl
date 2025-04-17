@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using MissionControl.Business;
 using MissionControl.Data;
 using MissionControl.Data.Data;
+using MissionControl.Message;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<MissionValidator>();
 builder.Services.AddScoped<MissionRepository>();
+
+builder.Services.AddSingleton<IConnection>(sp =>
+{
+    var factory = new ConnectionFactory()
+    {
+        HostName = "localhost", // Or read from configuration
+        Port = 5672
+    };
+    return factory.CreateConnection();
+});
+
+builder.Services.AddSingleton<RabbitMQService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

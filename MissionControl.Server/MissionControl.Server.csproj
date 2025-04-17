@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="24.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MissionControl.Business\MissionControl.Business.csproj" />
+    <ProjectReference Include="..\MissionControl.Message\MissionControl.Message.csproj" />
     <ProjectReference Include="..\MissionControl.Shared\MissionControl.Shared.csproj" />
   </ItemGroup>
 
