@@ -33,7 +33,7 @@ namespace MissionControl.Server.Controllers
                 {
                     var messageJson = JsonSerializer.Serialize(result.Data);
 
-                    _rabbitMQService.SendMessage(messageJson, "Mission rescue");
+                    _rabbitMQService.SendMessage(messageJson, "MissionRescue");
                     return StatusCode(StatusCodes.Status201Created, result);
                 }
                 else

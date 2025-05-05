@@ -1,0 +1,82 @@
+﻿@page "/"
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject MissionControl.Services.LoginState LoginState
+@using MissionControl.Client.Models
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="d-flex gap-5">
+        <div class="card p-4" style="width: 300px;">
+            <h3>Login jogador</h3>
+
+            <EditForm Model="@loginData" OnValidSubmit="LoginJedi">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div>
+                    <label>Knight Name</label>
+                    <InputText @bind-Value="loginData.JediName" class="form-control" />
+
+                    <label class="mt-2">Senha:</label>
+                    <InputText @bind-Value="loginData.Password" class="form-control" type="password" />
+
+                    <button type="submit" class="btn btn-primary mt-3">Login</button>
+
+                    @if (!string.IsNullOrEmpty(Message))
+                    {
+                        <p class="text-danger mt-2">@Message</p>
+                    }
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginData = new();
+ 
+    private string Message = "";
+    private string CreateMessage = "";
+
+    private async Task LoginJedi()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:44387/jogadores/login", new
+            {
+                NomeJogador = loginData.JediName,
+                Senha = loginData.Password
+            });
+
+            if (response.IsSuccessStatusCode)
+            {
+                var dtKnight = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                if (dtKnight != null)
+                {
+                    await LocalStorage.SetItemAsync("jediId", dtKnight.jediKnight.Id);
+                    await LocalStorage.SetItemAsync("jediName", dtKnight.jediKnight.JediName);
+
+                    LoginState.Login();
+                    Navigation.NavigateTo("/home", replace: true);
+
+                }
+                else
+                {
+                    Message = "Error to load data";
+                }
+
+            }
+            else
+            {
+                Message = "Some input is wrong";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"Some erro in login: {ex.Message}";
+        }
+    }
+}

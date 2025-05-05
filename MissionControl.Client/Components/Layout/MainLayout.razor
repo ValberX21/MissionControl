@@ -1,23 +1,47 @@
 ﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject MissionControl.Services.LoginState LoginState
+@inject NavigationManager Navigation
+<PageTitle>5-JogoFrontEndWeb</PageTitle>
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @if (LoginState.IsLoggedIn && !IsLoginPage)
+    {
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+    }
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code {
+    private bool loginChecked = false;
+
+    private bool IsLoginPage =>
+        Navigation.Uri.EndsWith("/") || Navigation.Uri.EndsWith("/index");
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loginChecked)
+        {
+            loginChecked = true;
+            await LoginState.RestoreFromLocalStorageAsync(LocalStorage);
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        LoginState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        LoginState.OnChange -= StateHasChanged;
+    }
+}

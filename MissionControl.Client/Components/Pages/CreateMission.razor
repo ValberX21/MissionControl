@@ -51,7 +51,6 @@
     {
         mission.Id = Guid.NewGuid(); 
 
-        // Se quiser apenas formatar para log ou debug, use ToString no momento certo
         mission.LaunchDate = DateTime.SpecifyKind(mission.LaunchDate, DateTimeKind.Local).ToUniversalTime();
 
         try
