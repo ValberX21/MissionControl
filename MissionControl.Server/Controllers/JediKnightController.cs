@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MissionControl.Business;
+﻿using JediKnight.Business;
+using Microsoft.AspNetCore.Mvc;
 using MissionControl.Message;
 using MissionControl.Shared.Models;
 
@@ -9,14 +9,14 @@ namespace MissionControl.Server.Controllers
     [ApiController]
     public class JediKnightController : ControllerBase
     {
-        private readonly MissionValidator _missionValidator;
+        private readonly JediKnightValidator _jediKnightValidator;
         private readonly RabbitMQService _rabbitMQService;
 
         protected ResponseDto _response;
 
-        public JediKnightController(MissionValidator missionValidator, RabbitMQService rabbitMQService)
+        public JediKnightController(JediKnightValidator jediKnightValidator, RabbitMQService rabbitMQService)
         {
-            _missionValidator = missionValidator;
+            _jediKnightValidator = jediKnightValidator;
             _rabbitMQService = rabbitMQService;
             _response = new ResponseDto();
         }
@@ -26,7 +26,7 @@ namespace MissionControl.Server.Controllers
         {
             try
             {
-                //IEnumerable<Product> result = (List<Product>)await _productValidator.listAllProducts();
+                IEnumerable<JediKnightModel> result = (IEnumerable<JediKnightModel>)await _jediKnightValidator.listJediKnights();
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

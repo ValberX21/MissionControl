@@ -1,9 +1,8 @@
-﻿using MissionControl.Shared;
-using MissionControl.Shared.Enum;
+﻿using MissionControl.Shared.Enum;
 
-namespace MissionControl.Shared
+namespace MissionControl.Shared.Models
 {
-    public class JediKnight
+    public class JediKnightModel
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 

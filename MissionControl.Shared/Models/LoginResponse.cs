@@ -4,6 +4,6 @@
     {
         public string Message { get; set; } = "";
 
-        public JediKnight? jediKnight { get; set; }
+        public JediKnightModel? jediKnight { get; set; }
     }
 }

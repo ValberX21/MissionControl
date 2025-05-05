@@ -1,29 +1,25 @@
-﻿using MissionControl.Data;
+using MissionControl.Data;
+using MissionControl.Shared;
 using MissionControl.Shared.Models;
 
-namespace MissionControl.Data
+namespace JediKnightControl
 {
-    public class MissionRepository
+    public class JediKnightRepository
     {
         private readonly ApplicationDbContext _db;
         protected ResponseDto _response;
 
-        public MissionRepository(ApplicationDbContext db)
+        public JediKnightRepository(ApplicationDbContext db)
         {
             _db = db;
             _response = new ResponseDto();
         }
 
-        public async Task<bool> CreateMission(Mission mission)
+        public async Task<bool> CreateJediKnight(JediKnightModel jediKnight)
         {
             try
             {
-                if (mission.LaunchDate.Kind != DateTimeKind.Utc)
-                {
-                    mission.LaunchDate = mission.LaunchDate.ToUniversalTime();
-                }
-
-                _db.Mission.Add(mission);
+                _db.JediKnight.Add(jediKnight);
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -32,6 +28,10 @@ namespace MissionControl.Data
             {
                 throw ex;
             }
+        }
+
+        public async Task<JediKnightModel> listJediKnights(){
+            return null;
         }
     }
 }
