@@ -1,6 +1,7 @@
-﻿using MissionControl.Client.Enum;
+﻿using MissionControl.Shared;
+using MissionControl.Shared.Enum;
 
-namespace MissionControl.Client.Models
+namespace MissionControl.Shared
 {
     public class JediKnight
     {

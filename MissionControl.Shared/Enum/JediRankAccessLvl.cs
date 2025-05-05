@@ -1,4 +1,4 @@
-﻿namespace MissionControl.Client.Enum
+﻿namespace MissionControl.Shared.Enum
 {
     public enum JediRank
     {

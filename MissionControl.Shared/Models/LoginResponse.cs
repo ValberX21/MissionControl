@@ -1,4 +1,4 @@
-﻿namespace MissionControl.Client.Models
+﻿namespace MissionControl.Shared.Models
 {
     public class LoginResponse
     {
