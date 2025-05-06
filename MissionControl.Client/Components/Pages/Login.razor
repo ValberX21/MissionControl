@@ -44,20 +44,20 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("https://localhost:44387/jogadores/login", new
+            var response = await Http.PostAsJsonAsync("https://localhost:44343/api/JediKnight/loginJediKnight", new
             {
-                NomeJogador = loginData.JediName,
-                Senha = loginData.Password
+                JediName = loginData.JediName,
+                Password = loginData.Password
             });
 
             if (response.IsSuccessStatusCode)
             {
-                var dtKnight = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                var dtKnight = await response.Content.ReadFromJsonAsync<JediKnightModel>();
 
                 if (dtKnight != null)
                 {
-                    await LocalStorage.SetItemAsync("jediId", dtKnight.jediKnight.Id);
-                    await LocalStorage.SetItemAsync("jediName", dtKnight.jediKnight.JediName);
+                    await LocalStorage.SetItemAsync("jediId", dtKnight.Id);
+                    await LocalStorage.SetItemAsync("jediName", dtKnight.JediName);
 
                     LoginState.Login();
                     Navigation.NavigateTo("/home", replace: true);

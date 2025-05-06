@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MissionControl.Shared;
+using MissionControl.Shared.Enum;
 using MissionControl.Shared.Models;
 
 namespace MissionControl.Data
@@ -14,6 +15,9 @@ namespace MissionControl.Data
         public DbSet<JediKnightModel> JediKnight { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresEnum<JediRank>();
+            modelBuilder.HasPostgresEnum<AccessLevel>();
+
             base.OnModelCreating(modelBuilder);
         }
     }

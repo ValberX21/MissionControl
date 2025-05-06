@@ -1,5 +1,7 @@
 using JediKnightControl;
 using MissionControl.Shared.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace JediKnight.Business
 {
@@ -17,14 +19,19 @@ namespace JediKnight.Business
         public async Task<ResponseDto> addKnight(JediKnightModel knight)
         {
             try
-            {               
+            {
+                using var sha256 = SHA256.Create();
+                var bytes = Encoding.UTF8.GetBytes(knight.Password);
+                var hashBytes = sha256.ComputeHash(bytes);
+                knight.Password = Convert.ToBase64String(hashBytes);
+
                 bool addProdcut = await _knightRepository.CreateJediKnight(knight);
 
                 if (addProdcut)
                 {
                     _response.IsSuccess = true;
                     _response.Data = knight;
-                    _response.DisplayMessage = "Knight added success";
+                    _response.DisplayMessage = "Knight created success";
                 }
             }
             catch (Exception ex)
@@ -37,11 +44,17 @@ namespace JediKnight.Business
 
         }
 
-        public async Task<ResponseDto> listJediKnights()
+        public async Task<ResponseDto> checkKnight(LoginModel jediKnight)
         {
             try
-            {               
-                await _knightRepository.listJediKnights();
+            {
+                using var sha256 = SHA256.Create();
+                var bytes = Encoding.UTF8.GetBytes(jediKnight.Password);
+                var hashBytes = sha256.ComputeHash(bytes);
+                jediKnight.Password = Convert.ToBase64String(hashBytes);
+
+                var dt = await _knightRepository.loginJediKnights(jediKnight);
+                _response.Data = dt;
             }
             catch (Exception ex)
             {

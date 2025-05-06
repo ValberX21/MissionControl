@@ -21,13 +21,30 @@ namespace MissionControl.Server.Controllers
             _response = new ResponseDto();
         }
 
-        [HttpPost("searchJediKnight")]
-        public async Task<IActionResult> Get()
+        [HttpPost("loginJediKnight")]
+        public async Task<IActionResult> LoginUser(LoginModel dtKnight)
         {
             try
             {
-                IEnumerable<JediKnightModel> result = (IEnumerable<JediKnightModel>)await _jediKnightValidator.listJediKnights();
-                return StatusCode(StatusCodes.Status200OK);
+                ResponseDto jedi = await _jediKnightValidator.checkKnight(dtKnight);
+
+                return StatusCode(StatusCodes.Status200OK, jedi);
+            }
+            catch (Exception ex)
+            {
+                return Problem($"An error occurred: {ex.Message}");
+            }
+
+        }
+
+        [HttpPost("addJediKnight")]
+        public async Task<IActionResult> CreateUser([FromBody] JediKnightModel jediKnight)
+        {
+            try
+            {
+                ResponseDto jedi = await _jediKnightValidator.addKnight(jediKnight);
+
+                return StatusCode(StatusCodes.Status200OK, jedi);
             }
             catch (Exception ex)
             {

@@ -1,12 +1,15 @@
 ﻿using MissionControl.Shared.Enum;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MissionControl.Shared.Models
 {
+    [Table("JediKnight")]
     public class JediKnightModel
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string JediName { get; set; }
+        public string Password { get; set; }
 
         public string LightsaberColor { get; set; }
 

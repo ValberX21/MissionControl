@@ -30,8 +30,29 @@ namespace JediKnightControl
             }
         }
 
-        public async Task<JediKnightModel> listJediKnights(){
-            return null;
+        public async Task<JediKnightModel> loginJediKnights(LoginModel jediKnight)
+        {
+            try
+            {
+                JediKnightModel? dtJediKnight =
+                    _db.JediKnight.FirstOrDefault(j => j.JediName == jediKnight.JediName
+                                                    &&
+                                                    j.Password == jediKnight.Password);
+
+                dtJediKnight.Password = "";
+                if (dtJediKnight == null)
+                {
+                    throw new Exception("Jedi not found");
+                }
+                else
+                {
+                    return dtJediKnight;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
