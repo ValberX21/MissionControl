@@ -1,0 +1,105 @@
+﻿@page "/listmissions"
+@using MissionControl.Shared.Models
+@inject HttpClient Http
+@using Microsoft.AspNetCore.WebUtilities
+
+<h3 class="mb-4">Mission List</h3>
+
+<div class="card mb-4 p-3">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <InputText class="form-control" @bind-Value="filter.Name" placeholder="Name" />
+        </div>
+        <div class="col-md-3">
+            <InputText class="form-control" @bind-Value="filter.Destination" placeholder="Destination" />
+        </div>
+        <div class="col-md-3">
+            <InputText class="form-control" @bind-Value="filter.RocketType" placeholder="Rocket Type" />
+        </div>
+        <div class="col-md-3">
+            <InputText class="form-control" @bind-Value="filter.MasterApprove" placeholder="Master Approve" />
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" @onclick="SearchMissions">Search</button>
+        </div>
+    </div>
+</div>
+
+@if (missions == null)
+{
+    <p>Loading missions...</p>
+}
+else if (!missions.Any())
+{
+    <p>No missions found.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Destination</th>
+                <th>Launch Date</th>
+                <th>Rocket Type</th>
+                <th>Status</th>
+                <th>Master Approve</th>
+                <th>Approve Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var mission in missions)
+            {
+                <tr>
+                    <td>@mission.Name</td>
+                    <td>@mission.Destination</td>
+                    <td>@mission.LaunchDate.ToString("yyyy-MM-dd")</td>
+                    <td>@mission.RocketType</td>
+                    <td>@mission.Status</td>
+                    <td>@mission.MasterApprove</td>
+                    <td>@mission.ApproveDate.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Mission>? missions;
+    private MissionFilterModel filter = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchMissions();
+    }
+
+    private async Task SearchMissions()
+    {
+        var baseUri = "https://localhost:44343/api/Mission/list";
+
+        var queryParams = new Dictionary<string, string>();
+
+        if (!string.IsNullOrWhiteSpace(filter.Name))
+            queryParams["name"] = filter.Name;
+
+        if (!string.IsNullOrWhiteSpace(filter.Destination))
+            queryParams["destination"] = filter.Destination;
+
+        if (!string.IsNullOrWhiteSpace(filter.RocketType))
+            queryParams["rocketType"] = filter.RocketType;
+
+        if (!string.IsNullOrWhiteSpace(filter.MasterApprove))
+            queryParams["masterApprove"] = filter.MasterApprove;
+
+        var query = QueryHelpers.AddQueryString(baseUri, queryParams);
+        missions = await Http.GetFromJsonAsync<List<Mission>>(query);
+    }
+
+    public class MissionFilterModel
+    {
+        public string? Name { get; set; }
+        public string? Destination { get; set; }
+        public string? RocketType { get; set; }
+        public string? MasterApprove { get; set; }
+    }
+}

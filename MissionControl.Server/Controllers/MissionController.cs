@@ -2,7 +2,9 @@
 using MissionControl.Business;
 using MissionControl.Message;
 using MissionControl.Shared.Models;
+using System.Collections.Generic;
 using System.Text.Json;
+using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
 namespace MissionControl.Server.Controllers
 {
@@ -45,6 +47,23 @@ namespace MissionControl.Server.Controllers
             {
                 return Problem($"An error occurred: {ex.Message}");
             }
+        }
+
+        [HttpGet("list")]
+        public async Task<IActionResult> Get([FromQuery] Mission filter)
+        {
+            List<Mission> missions = new List<Mission>();
+
+            try
+            {
+                missions = await _missionValidator.listMission(filter);
+                return StatusCode(StatusCodes.Status200OK, missions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }           
+
         }
     }
 }

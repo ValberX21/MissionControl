@@ -36,5 +36,10 @@ namespace MissionControl.Business
             return _response;
 
         }
+
+        public async Task<List<Mission>> listMission(Mission filter)
+        {
+            return await _missionRepository.listMissions(filter);
+        }
     }
 }

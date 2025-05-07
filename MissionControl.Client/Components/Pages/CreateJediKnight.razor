@@ -1,0 +1,101 @@
+﻿@page "/registerjedi"
+@using System.ComponentModel.DataAnnotations
+@using MissionControl.Shared.Models 
+@using MissionControl.Shared.Enum
+@inject HttpClient Http
+
+<h3>Register New Jedi</h3>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert @messageClass" role="alert">
+        @message
+    </div>
+}
+
+<EditForm Model="@jedi" OnValidSubmit="RegisterJedi">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Jedi Name</label>
+        <InputText class="form-control" @bind-Value="jedi.JediName" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <InputText class="form-control" @bind-Value="jedi.Password" type="password" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lightsaber Color</label>
+        <InputText class="form-control" @bind-Value="jedi.LightsaberColor" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rank</label>
+        <InputSelect class="form-select" @bind-Value="jedi.Rank">
+            @foreach (var rank in Enum.GetValues(typeof(JediRank)))
+            {
+                <option value="@rank">@rank</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Access Level</label>
+        <InputSelect class="form-select" @bind-Value="jedi.AccessLevel">
+            @foreach (var level in Enum.GetValues(typeof(AccessLevel)))
+            {
+                <option value="@level">@level</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Planet of Origin</label>
+        <InputText class="form-control" @bind-Value="jedi.PlanetOrigin" />
+    </div>
+
+    <div class="mb-3 form-check">
+        <InputCheckbox class="form-check-input" @bind-Value="jedi.IsDarkSideSuspected" />
+        <label class="form-check-label">Is suspected of the Dark Side?</label>
+    </div>
+
+    <div class="mb-3 form-check">
+        <InputCheckbox class="form-check-input" @bind-Value="jedi.IsActive" />
+        <label class="form-check-label">Is Active?</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register Jedi</button>
+</EditForm>
+
+@code {
+
+    private JediKnightModel jedi = new();
+    private string message = string.Empty;
+    private string messageClass = string.Empty;
+
+    private async Task RegisterJedi()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:44343/api/JediKnight/addJediKnight", jedi);
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Jedi successfully registered!";
+            messageClass = "alert-success";
+            ClearForm();
+        }
+        else
+        {
+            message = "An error occurred while registering the Jedi.";
+            messageClass = "alert-danger";
+        }
+    }
+
+    private void ClearForm()
+    {
+        jedi = new JediKnightModel();
+        StateHasChanged(); 
+    }
+}
