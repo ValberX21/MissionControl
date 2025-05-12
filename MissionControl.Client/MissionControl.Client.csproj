@@ -7,15 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\Image\background.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\Image\background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MissionControl.Shared\MissionControl.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Image\" />
   </ItemGroup>
 
 </Project>

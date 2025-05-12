@@ -4,36 +4,45 @@
 @inject NavigationManager Navigation
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<PageTitle>5-JogoFrontEndWeb</PageTitle>
+<PageTitle>Jedi system</PageTitle>
 
-<div class="page">
-    @if (LoginState.IsLoggedIn && !IsLoginPage)
-    {
-        <div class="sidebar">
-            <NavMenu />
-        </div>
-    }
+@if (showLayout)
+{
+    <div class="page">
+        @if (LoginState.IsLoggedIn && !IsLoginPage)
+        {
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+        }
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+}
+else
+{
+    <div class="text-center p-5">
+        <em>Loading Jedi state...</em>
+    </div>
+}
 
 @code {
-    private bool loginChecked = false;
+    private bool showLayout = false;
 
     private bool IsLoginPage =>
         Navigation.Uri.EndsWith("/") || Navigation.Uri.EndsWith("/index");
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !loginChecked)
+        if (firstRender)
         {
-            loginChecked = true;
             await LoginState.RestoreFromLocalStorageAsync(LocalStorage);
-            StateHasChanged();
+            showLayout = true;
+            StateHasChanged(); // Trigger rerender after session is loaded
         }
     }
 
@@ -46,5 +55,4 @@
     {
         LoginState.OnChange -= StateHasChanged;
     }
-
 }

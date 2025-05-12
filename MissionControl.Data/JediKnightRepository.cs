@@ -39,13 +39,14 @@ namespace JediKnightControl
                                                     &&
                                                     j.Password == jediKnight.Password);
 
-                dtJediKnight.Password = "";
+                
                 if (dtJediKnight == null)
                 {
                     throw new Exception("Jedi not found");
                 }
                 else
                 {
+                    dtJediKnight.Password = "";
                     return dtJediKnight;
                 }
             }

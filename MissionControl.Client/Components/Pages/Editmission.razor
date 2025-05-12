@@ -1,0 +1,98 @@
+﻿@page "/editmission/{missionId:guid}"
+@using MissionControl.Shared.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using System.Globalization
+
+<h3>Edit Mission</h3>
+
+
+<EditForm Model="@mission" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Mission Name</label>
+        <InputText class="form-control" @bind-Value="mission.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Destination</label>
+        <InputText class="form-control" @bind-Value="mission.Destination" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rocket Type</label>
+        <InputText class="form-control" @bind-Value="mission.RocketType" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Launch Date</label>
+        <InputDate class="form-control" @bind-Value="mission.LaunchDate" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <InputText class="form-control" @bind-Value="mission.Status" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-info mt-3">@message</div>
+}
+
+@code {
+
+    [Parameter] public Guid? missionId { get; set; }
+
+    private Mission mission = new();
+    private string message = "";
+    private bool IsEditMode => missionId.HasValue;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            try
+            {
+                mission = await Http.GetFromJsonAsync<Mission>($"https://localhost:44343/api/Mission/listById/{missionId}");
+                message = $"Editing mission '{mission.Name}'";
+            }
+            catch
+            {
+                message = "Failed to load mission for editing.";
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            mission.LaunchDate = DateTime.SpecifyKind(mission.LaunchDate, DateTimeKind.Local).ToUniversalTime();
+
+            HttpResponseMessage response;
+                       
+            response = await Http.PutAsJsonAsync($"https://localhost:44343/api/Mission/updateMission/{missionId}", mission);
+          
+
+            if (response.IsSuccessStatusCode)
+            {
+                message = $"Mission '{mission.Name}' successfully {(IsEditMode ? "updated" : "created")}!";
+                await Task.Delay(1500);
+                Navigation.NavigateTo("/listmissions");
+            }
+            else
+            {
+                message = $"Failed. Status: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"Error: {ex.Message}";
+        }
+    }
+}

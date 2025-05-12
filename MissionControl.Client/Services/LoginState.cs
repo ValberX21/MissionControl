@@ -16,13 +16,14 @@ namespace MissionControl.Services
 
         public async Task RestoreFromLocalStorageAsync(ILocalStorageService localStorage)
         {
-            var idJogador = await localStorage.GetItemAsync<string>("idJogador");
-            if (!string.IsNullOrEmpty(idJogador))
+            var jediId = await localStorage.GetItemAsync<string>("jediId");
+            if (!string.IsNullOrEmpty(jediId))
             {
                 IsLoggedIn = true;
                 NotifyStateChanged();
             }
         }
+
 
         private void NotifyStateChanged() => OnChange?.Invoke();
     }

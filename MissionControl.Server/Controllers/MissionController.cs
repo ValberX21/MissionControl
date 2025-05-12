@@ -65,5 +65,55 @@ namespace MissionControl.Server.Controllers
             }           
 
         }
+
+        [HttpPut("updateMission/{id}")]
+        public async Task<IActionResult> UpdateMission(Guid id, [FromBody] Mission mission)
+        {
+            try
+            {
+                ResponseDto result = await _missionValidator.updatedMission(id,mission);
+
+                if (result.IsSuccess)
+                {
+                    var messageJson = JsonSerializer.Serialize(result.Data);
+
+                    return StatusCode(StatusCodes.Status200OK, result);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem($"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("listById/{missionId}")]
+        public async Task<IActionResult> FoundById(Guid missionId)
+        {
+            try
+            {
+                Mission result = await _missionValidator.findMissinoById(missionId);
+
+                if (result != null)
+                {
+                    var messageJson = JsonSerializer.Serialize(result);
+                  
+                    return StatusCode(StatusCodes.Status200OK, messageJson);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem($"An error occurred: {ex.Message}");
+            }
+
+        }
+
     }
 }

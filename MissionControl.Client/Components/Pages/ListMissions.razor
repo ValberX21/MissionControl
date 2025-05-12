@@ -2,6 +2,8 @@
 @using MissionControl.Shared.Models
 @inject HttpClient Http
 @using Microsoft.AspNetCore.WebUtilities
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Navigation
 
 <h3 class="mb-4">Mission List</h3>
 
@@ -45,7 +47,9 @@ else
                 <th>Status</th>
                 <th>Master Approve</th>
                 <th>Approve Date</th>
+                <th>Actions</th>
             </tr>
+
         </thead>
         <tbody>
             @foreach (var mission in missions)
@@ -58,6 +62,17 @@ else
                     <td>@mission.Status</td>
                     <td>@mission.MasterApprove</td>
                     <td>@mission.ApproveDate.ToString("yyyy-MM-dd")</td>
+
+                    <td>
+                        @if (AccessLevel == 2)
+                        {
+                            <button class="btn btn-sm btn-warning" @onclick="@(() => EditMission(mission.Id))">Edit</button>
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -67,10 +82,24 @@ else
 @code {
     private List<Mission>? missions;
     private MissionFilterModel filter = new();
+    private Guid JediId;
+    private string JediName = string.Empty;
+    private int AccessLevel;
+    private bool initialized = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await SearchMissions();
+        if (firstRender && !initialized)
+        {
+            initialized = true;
+           
+            JediId = await LocalStorage.GetItemAsync<Guid>("jediId");
+            JediName = await LocalStorage.GetItemAsync<string>("jediName");
+            AccessLevel = await LocalStorage.GetItemAsync<int>("accessLevel");
+
+            await SearchMissions();
+            StateHasChanged();
+        }
     }
 
     private async Task SearchMissions()
@@ -101,5 +130,10 @@ else
         public string? Destination { get; set; }
         public string? RocketType { get; set; }
         public string? MasterApprove { get; set; }
+    }
+
+    private void EditMission(Guid missionId)
+    {
+        Navigation.NavigateTo($"/editmission/{missionId}");
     }
 }

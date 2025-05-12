@@ -57,5 +57,43 @@ namespace MissionControl.Data
             return await query.ToListAsync();
         }
 
+        public async Task<bool> Update(Guid id , Mission mission)
+        {
+            try
+            {
+                Mission existing = await _db.Mission.FindAsync(id);
+                if (existing == null)
+                    return false;
+
+               
+                existing.Name = mission.Name;
+                existing.Destination = mission.Destination;
+                existing.LaunchDate = mission.LaunchDate;
+                existing.RocketType = mission.RocketType;
+                existing.Status = mission.Status;
+                existing.MasterApprove = mission.MasterApprove;
+                existing.ApproveDate = mission.ApproveDate;
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw; 
+            }
+        }
+
+        public async Task<Mission> getMissionById(Guid id)
+        {
+            Mission missionSelected = await _db.Mission.FindAsync(id);
+            if(missionSelected != null)
+            {
+                return missionSelected;
+            }
+            else
+            {
+                throw new Exception("Mission not found");
+            }
+        }
     }
 }

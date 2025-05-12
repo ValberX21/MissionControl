@@ -2,17 +2,17 @@
 {
     public enum JediRank
     {
-        Youngling,
-        Padawan,
-        Knight,
-        Master,
-        GrandMaster
+        Youngling = 1,
+        Padawan = 2,
+        Knight = 3,
+        Master = 4,
+        GrandMaster = 5
     }
 
     public enum AccessLevel
     {
-        Restricted,
-        Full,
-        CouncilOnly
+        Restricted = 1,
+        Full = 2,
+        CouncilOnly = 3
     }
 }
