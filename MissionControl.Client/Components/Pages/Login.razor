@@ -7,6 +7,13 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
     .background {
         background-image: url('/Image/background.png');
         background-size: cover;
@@ -15,8 +22,8 @@
         width: 100vw;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        padding-left: 5%;
+        justify-content: flex-end;
+        padding-right: 6%; /* adjusted here to move form a bit to the left */
     }
 
     .login-card {
@@ -28,39 +35,35 @@
     }
 </style>
 
-<div class="d-flex justify-content-center align-items-center min-vh-100">
-    <div class="d-flex gap-5">
-        <div class="card p-4" style="width: 300px;">
-            <h3>Welcome Jedi</h3>
+<div class="background">
+    <div class="login-card">
+        <h3>Welcome Jedi</h3>
 
-            <EditForm Model="@loginData" OnValidSubmit="LoginJedi">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+        <EditForm Model="@loginData" OnValidSubmit="LoginJedi">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-                <div>
-                    <label>Knight Name</label>
-                    <InputText @bind-Value="loginData.JediName" class="form-control" />
+            <div>
+                <label>Knight Name</label>
+                <InputText @bind-Value="loginData.JediName" class="form-control" />
 
-                    <label class="mt-2">Password:</label>
-                    <InputText @bind-Value="loginData.Password" class="form-control" type="password" />
+                <label class="mt-2">Password:</label>
+                <InputText @bind-Value="loginData.Password" class="form-control" type="password" />
 
-                    <button type="submit" class="btn btn-primary mt-3">Login</button>
+                <button type="submit" class="btn btn-primary mt-3">Login</button>
 
-                    @if (!string.IsNullOrEmpty(Message))
-                    {
-                        <p class="text-danger mt-2">@Message</p>
-                    }
-                </div>
-            </EditForm>
-        </div>
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <p class="text-danger mt-2">@Message</p>
+                }
+            </div>
+        </EditForm>
     </div>
 </div>
 
 @code {
     private LoginModel loginData = new();
- 
     private string Message = "";
-    private string CreateMessage = "";
 
     private async Task LoginJedi()
     {
@@ -79,7 +82,6 @@
                 if (result?.Data != null)
                 {
                     var dtKnight = result.Data;
-
                     await LocalStorage.SetItemAsync("jediId", dtKnight.Id);
                     await LocalStorage.SetItemAsync("jediName", dtKnight.JediName);
                     await LocalStorage.SetItemAsync("accessLevel", dtKnight.AccessLevel);
@@ -99,7 +101,7 @@
         }
         catch (Exception ex)
         {
-            Message = $"Some erro in login: {ex.Message}";
+            Message = $"Some error in login: {ex.Message}";
         }
     }
 }

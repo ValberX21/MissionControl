@@ -7,13 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Components\Image\background.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Components\Image\background.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Remove="wwwroot\Image\background.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +16,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MissionControl.Shared\MissionControl.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Image\background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

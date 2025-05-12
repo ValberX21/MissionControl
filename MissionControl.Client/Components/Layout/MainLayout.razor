@@ -6,9 +6,24 @@
 
 <PageTitle>Jedi system</PageTitle>
 
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .page {
+        background-image: url('/Images/bg.png');
+       
+    }
+
+</style>
+
 @if (showLayout)
 {
-    <div class="page">
+    <div class="page @BodyCssClass">
+
         @if (LoginState.IsLoggedIn && !IsLoginPage)
         {
             <div class="sidebar">
@@ -17,7 +32,7 @@
         }
 
         <main>
-            <article class="content px-4">
+            <article class="content @(IsLoginPage ? "" : "px-4")">
                 @Body
             </article>
         </main>
@@ -34,7 +49,9 @@ else
     private bool showLayout = false;
 
     private bool IsLoginPage =>
-        Navigation.Uri.EndsWith("/") || Navigation.Uri.EndsWith("/index");
+        Navigation.Uri.EndsWith("/") || Navigation.Uri.EndsWith("/index") || Navigation.Uri.Contains("/login");
+
+    private string BodyCssClass => IsLoginPage ? "login-page" : "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -42,7 +59,7 @@ else
         {
             await LoginState.RestoreFromLocalStorageAsync(LocalStorage);
             showLayout = true;
-            StateHasChanged(); // Trigger rerender after session is loaded
+            StateHasChanged();
         }
     }
 
