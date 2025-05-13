@@ -4,71 +4,95 @@
 @using MissionControl.Shared.Enum
 @inject HttpClient Http
 
-<h3>Register New Jedi</h3>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <div class="alert @messageClass" role="alert">
-        @message
-    </div>
-}
+    .form-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 800px; /* control the max width */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+</style>
 
-<EditForm Model="@jedi" OnValidSubmit="RegisterJedi">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="form-container">
+    <div class="form-card">
 
-    <div class="mb-3">
-        <label class="form-label">Jedi Name</label>
-        <InputText class="form-control" @bind-Value="jedi.JediName" />
-    </div>
+    <h3>Register New Jedi</h3>
 
-    <div class="mb-3">
-        <label class="form-label">Password</label>
-        <InputText class="form-control" @bind-Value="jedi.Password" type="password" />
-    </div>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @messageClass" role="alert">
+            @message
+        </div>
+    }
 
-    <div class="mb-3">
-        <label class="form-label">Lightsaber Color</label>
-        <InputText class="form-control" @bind-Value="jedi.LightsaberColor" />
-    </div>
+    <EditForm Model="@jedi" OnValidSubmit="RegisterJedi">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="mb-3">
-        <label class="form-label">Rank</label>
-        <InputSelect class="form-select" @bind-Value="jedi.Rank">
-            @foreach (var rank in Enum.GetValues(typeof(JediRank)))
-            {
-                <option value="@rank">@rank</option>
-            }
-        </InputSelect>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Jedi Name</label>
+            <InputText class="form-control" @bind-Value="jedi.JediName" />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Access Level</label>
-        <InputSelect class="form-select" @bind-Value="jedi.AccessLevel">
-            @foreach (var level in Enum.GetValues(typeof(AccessLevel)))
-            {
-                <option value="@level">@level</option>
-            }
-        </InputSelect>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <InputText class="form-control" @bind-Value="jedi.Password" type="password" />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Planet of Origin</label>
-        <InputText class="form-control" @bind-Value="jedi.PlanetOrigin" />
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Lightsaber Color</label>
+            <InputText class="form-control" @bind-Value="jedi.LightsaberColor" />
+        </div>
 
-    <div class="mb-3 form-check">
-        <InputCheckbox class="form-check-input" @bind-Value="jedi.IsDarkSideSuspected" />
-        <label class="form-check-label">Is suspected of the Dark Side?</label>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Rank</label>
+            <InputSelect class="form-select" @bind-Value="jedi.Rank">
+                @foreach (var rank in Enum.GetValues(typeof(JediRank)))
+                {
+                    <option value="@rank">@rank</option>
+                }
+            </InputSelect>
+        </div>
 
-    <div class="mb-3 form-check">
-        <InputCheckbox class="form-check-input" @bind-Value="jedi.IsActive" />
-        <label class="form-check-label">Is Active?</label>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Access Level</label>
+            <InputSelect class="form-select" @bind-Value="jedi.AccessLevel">
+                @foreach (var level in Enum.GetValues(typeof(AccessLevel)))
+                {
+                    <option value="@level">@level</option>
+                }
+            </InputSelect>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Register Jedi</button>
-</EditForm>
+        <div class="mb-3">
+            <label class="form-label">Planet of Origin</label>
+            <InputText class="form-control" @bind-Value="jedi.PlanetOrigin" />
+        </div>
+
+        <div class="mb-3 form-check">
+            <InputCheckbox class="form-check-input" @bind-Value="jedi.IsDarkSideSuspected" />
+            <label class="form-check-label">Is suspected of the Dark Side?</label>
+        </div>
+
+        <div class="mb-3 form-check">
+            <InputCheckbox class="form-check-input" @bind-Value="jedi.IsActive" />
+            <label class="form-check-label">Is Active?</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register Jedi</button>
+    </EditForm>
+</div>
+</div>
 
 @code {
 

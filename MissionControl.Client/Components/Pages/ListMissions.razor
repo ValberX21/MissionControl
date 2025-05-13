@@ -5,79 +5,103 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager Navigation
 
-<h3 class="mb-4">Mission List</h3>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
 
-<div class="card mb-4 p-3">
-    <div class="row g-3">
-        <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="filter.Name" placeholder="Name" />
+    .form-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding:20px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 90%; /* control the max width */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <h3 class="mb-4">Mission List</h3>
+
+        <div class="card mb-4 p-3">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <InputText class="form-control" @bind-Value="filter.Name" placeholder="Name" />
+                </div>
+                <div class="col-md-3">
+                    <InputText class="form-control" @bind-Value="filter.Destination" placeholder="Destination" />
+                </div>
+                <div class="col-md-3">
+                    <InputText class="form-control" @bind-Value="filter.RocketType" placeholder="Rocket Type" />
+                </div>
+                <div class="col-md-3">
+                    <InputText class="form-control" @bind-Value="filter.MasterApprove" placeholder="Master Approve" />
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary" @onclick="SearchMissions">Search</button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="filter.Destination" placeholder="Destination" />
-        </div>
-        <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="filter.RocketType" placeholder="Rocket Type" />
-        </div>
-        <div class="col-md-3">
-            <InputText class="form-control" @bind-Value="filter.MasterApprove" placeholder="Master Approve" />
-        </div>
-        <div class="col-12">
-            <button class="btn btn-primary" @onclick="SearchMissions">Search</button>
-        </div>
+
+        @if (missions == null)
+        {
+            <p>Loading missions...</p>
+        }
+        else if (!missions.Any())
+        {
+            <p>No missions found.</p>
+        }
+        else
+        {
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Destination</th>
+                        <th>Launch Date</th>
+                        <th>Rocket Type</th>
+                        <th>Status</th>
+                        <th>Master Approve</th>
+                        <th>Approve Date</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var mission in missions)
+                    {
+                        <tr>
+                            <td>@mission.Name</td>
+                            <td>@mission.Destination</td>
+                            <td>@mission.LaunchDate.ToString("yyyy-MM-dd")</td>
+                            <td>@mission.RocketType</td>
+                            <td>@mission.Status</td>
+                            <td>@mission.MasterApprove</td>
+                            <td>@mission.ApproveDate.ToString("yyyy-MM-dd")</td>
+
+                            <td>
+                                @if (AccessLevel == 2)
+                                {
+                                    <button class="btn btn-sm btn-warning" @onclick="@(() => EditMission(mission.Id))">Edit</button>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
     </div>
 </div>
-
-@if (missions == null)
-{
-    <p>Loading missions...</p>
-}
-else if (!missions.Any())
-{
-    <p>No missions found.</p>
-}
-else
-{
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Name</th>
-                <th>Destination</th>
-                <th>Launch Date</th>
-                <th>Rocket Type</th>
-                <th>Status</th>
-                <th>Master Approve</th>
-                <th>Approve Date</th>
-                <th>Actions</th>
-            </tr>
-
-        </thead>
-        <tbody>
-            @foreach (var mission in missions)
-            {
-                <tr>
-                    <td>@mission.Name</td>
-                    <td>@mission.Destination</td>
-                    <td>@mission.LaunchDate.ToString("yyyy-MM-dd")</td>
-                    <td>@mission.RocketType</td>
-                    <td>@mission.Status</td>
-                    <td>@mission.MasterApprove</td>
-                    <td>@mission.ApproveDate.ToString("yyyy-MM-dd")</td>
-
-                    <td>
-                        @if (AccessLevel == 2)
-                        {
-                            <button class="btn btn-sm btn-warning" @onclick="@(() => EditMission(mission.Id))">Edit</button>
-                        }
-                        else
-                        {
-                            <span class="text-muted">N/A</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
 
 @code {
     private List<Mission>? missions;

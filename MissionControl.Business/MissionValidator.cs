@@ -1,5 +1,6 @@
 ﻿using MissionControl.Data;
 using MissionControl.Shared.Models;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace MissionControl.Business
@@ -18,15 +19,31 @@ namespace MissionControl.Business
         public async Task<ResponseDto> addMission(Mission mission)
         {
             try
-            {               
-                bool addProdcut = await _missionRepository.CreateMission(mission);
-
-                if (addProdcut)
+            {
+                Mission missionDt = new Mission()
                 {
-                    _response.IsSuccess = true;
-                    _response.Data = mission;
-                    _response.DisplayMessage = "Mission added success";
+                    Name = mission.Name
+                };
+
+                List<Mission> missionRegistred = await _missionRepository.listMissions(missionDt);
+
+                if(missionRegistred.Count > 1)
+                {
+                    _response.IsSuccess = false;                 
+                    _response.DisplayMessage = "Mission equal that already registred";
                 }
+                else
+                {
+                    bool addProdcut = await _missionRepository.CreateMission(mission);
+
+                    if (addProdcut)
+                    {
+                        _response.IsSuccess = true;
+                        _response.Data = mission;
+                        _response.DisplayMessage = "Mission added success";
+                    }
+                }
+
             }
             catch (Exception ex)
             {

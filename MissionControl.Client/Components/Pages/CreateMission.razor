@@ -3,44 +3,68 @@
 @inject HttpClient Http
 @using System.Globalization;
 
-<h3>Register New Mission</h3>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
 
-<EditForm Model="@mission" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    .form-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 800px; /* control the max width */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+</style>
 
-    <div class="mb-3">
-        <label class="form-label">Mission Name</label>
-        <InputText class="form-control" @bind-Value="mission.Name" />
+<div class="form-container">
+    <div class="form-card">
+        <h3>Register New Mission</h3>
+
+        <EditForm Model="@mission" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Mission Name</label>
+                <InputText class="form-control" @bind-Value="mission.Name" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Destination</label>
+                <InputText class="form-control" @bind-Value="mission.Destination" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Rocket Type</label>
+                <InputText class="form-control" @bind-Value="mission.RocketType" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Launch Date</label>
+                <InputDate class="form-control" @bind-Value="mission.LaunchDate" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <InputText class="form-control" @bind-Value="mission.Status" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+        </EditForm>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-info mt-3">@message</div>
+        }
     </div>
+</div>
 
-    <div class="mb-3">
-        <label class="form-label">Destination</label>
-        <InputText class="form-control" @bind-Value="mission.Destination" />
-    </div>       
-
-    <div class="mb-3">
-        <label class="form-label">Rocket Type</label>
-        <InputText class="form-control" @bind-Value="mission.RocketType" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Launch Date</label>
-        <InputDate class="form-control" @bind-Value="mission.LaunchDate" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Status</label>
-        <InputText class="form-control" @bind-Value="mission.Status" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Submit</button>
-</EditForm>
-
-@if (!string.IsNullOrEmpty(message))
-{
-    <div class="alert alert-info mt-3">@message</div>
-}
 
 @code {
     private Mission mission = new();
