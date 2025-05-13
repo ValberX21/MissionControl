@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MissionControl.Business\MissionControl.Business.csproj" />
     <ProjectReference Include="..\MissionControl.Message\MissionControl.Message.csproj" />
+    <ProjectReference Include="..\MissionControl.Security\MissionControl.Security.csproj" />
     <ProjectReference Include="..\MissionControl.Shared\MissionControl.Shared.csproj" />
   </ItemGroup>
 

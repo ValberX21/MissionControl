@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MissionControl.Business;
 using MissionControl.Message;
+using MissionControl.Security.Services;
 using MissionControl.Shared.Models;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -14,11 +15,13 @@ namespace MissionControl.Server.Controllers
     {
         private readonly MissionValidator _missionValidator;
         private readonly RabbitMQService _rabbitMQService;
+        private readonly EncryptionService _encryptionService;
 
         protected ResponseDto _response;
 
-        public MissionController(MissionValidator missionValidator, RabbitMQService rabbitMQService)
+        public MissionController(MissionValidator missionValidator, RabbitMQService rabbitMQService, EncryptionService encryptionService)
         {
+            _encryptionService = encryptionService;
             _missionValidator = missionValidator;
             _rabbitMQService = rabbitMQService;
             _response = new ResponseDto();
@@ -35,7 +38,9 @@ namespace MissionControl.Server.Controllers
                 {
                     var messageJson = JsonSerializer.Serialize(result.Data);
 
-                    _rabbitMQService.SendMessage(messageJson, "MissionRescue");
+                    var mesageJsonEncryp = _encryptionService.Encrypt(messageJson);
+
+                    _rabbitMQService.SendMessage(mesageJsonEncryp, "MissionCreated");
                     return StatusCode(StatusCodes.Status201Created, result);
                 }
                 else

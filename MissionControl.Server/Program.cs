@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MissionControl.Business;
 using MissionControl.Data;
 using MissionControl.Message;
+using MissionControl.Security.Services;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddScoped<MissionValidator>();
 builder.Services.AddScoped<MissionRepository>();
 builder.Services.AddScoped<JediKnightValidator>();
 builder.Services.AddScoped<JediKnightRepository>();
+builder.Services.AddScoped<EncryptionService>();
 
 builder.Services.AddSingleton<IConnection>(sp =>
 {
