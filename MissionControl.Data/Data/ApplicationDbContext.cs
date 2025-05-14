@@ -13,6 +13,8 @@ namespace MissionControl.Data
 
         public DbSet<Mission> Mission { get; set; }
         public DbSet<JediKnightModel> JediKnight { get; set; }
+        public DbSet<JavaResponseModel> JavaResponse { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresEnum<JediRank>();
