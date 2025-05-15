@@ -20,7 +20,7 @@ namespace MissionControl.Server.Controllers
         {
             ResponseDto result = await _javaResponseValidator.confirmMission(model);
 
-            return StatusCode(StatusCodes.Status201Created, result);
+            return StatusCode(StatusCodes.Status200OK, result);
 
         }
     }

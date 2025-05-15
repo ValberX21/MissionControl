@@ -17,6 +17,9 @@ builder.Services.AddScoped<MissionValidator>();
 builder.Services.AddScoped<MissionRepository>();
 builder.Services.AddScoped<JediKnightValidator>();
 builder.Services.AddScoped<JediKnightRepository>();
+builder.Services.AddScoped<JavaResponseValidator>();
+builder.Services.AddScoped<JavaResponseRepository>();
+
 builder.Services.AddScoped<EncryptionService>();
 
 builder.Services.AddSingleton<IConnection>(sp =>

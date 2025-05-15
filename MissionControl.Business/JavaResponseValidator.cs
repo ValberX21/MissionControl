@@ -24,6 +24,7 @@ namespace MissionControl.Business
         {
             try
             {
+                mission.ReceivedAt = DateTime.UtcNow;
               
                 bool addReturnJava = await _javaResponseRepository.confirmJava(mission);
 
